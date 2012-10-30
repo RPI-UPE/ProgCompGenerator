@@ -1,0 +1,22 @@
+# Blank lines and lines prefixed with "# " are ignored
+5
+
+# 1. Test input
+19
+ABCDABGHRPIJABDNRPI
+
+# 2. Test input
+22
+OPOPOPOPPAGANGNAMSTYLE
+
+# 3. Reverse shift
+9
+ABABABABB
+
+# 4. Same letter
+18
+CCCCCCBBBBBBAAAAAA
+
+# 5. All unique
+10
+ABCDEFGHIJ

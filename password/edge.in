@@ -1,0 +1,35 @@
+# Blank lines and lines prefixed with "# " are ignored
+4
+
+# 1. Test input
+5 3
+123
+abc
+1b3
+1c2
+1ac
+
+# 2. Test input
+6 4
+OGco
+ROom
+POco
+PRop
+POGp
+Gcmp
+
+# 3. Minimal set
+5 2
+ab
+bc
+cd
+de
+ef
+
+# 4. Maximum set
+5 5
+abcde
+abcde
+abcde
+abcde
+abcde
