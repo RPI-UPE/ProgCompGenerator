@@ -1,7 +1,7 @@
-You are given a sequence of `n` numbers. Your goal is to split up these numbers
-into as many groups as possible such that the sum of the numbers in each group
-is equal across all groups. A group can only consist of numbers that are
-sequential with each other.
+You are given a sequence of `n` positive integers. Your goal is to split up
+these numbers into as many groups as possible such that the sum of the numbers
+in each group is equal across all groups. A group can only consist of numbers
+that are sequential with each other.
 
 Your input will be first an integer telling you how many numbers to read, and
 then a new number on each line. Your output will be a single integer
