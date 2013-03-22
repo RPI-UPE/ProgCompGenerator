@@ -1,0 +1,23 @@
+# Number of files to be generated for the server
+test_files: 50
+
+# Number of test cases to include per file (including edge cases)
+test_cases:
+  devel: 20
+  prod: 200
+
+semester: spring2013
+
+problems:
+  split:
+    runners:
+      - runner_vera.py
+
+  travel:
+    runners: []
+
+  sliding:
+    runners: []
+
+  shaving:
+    runners: []

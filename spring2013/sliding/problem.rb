@@ -1,115 +1,120 @@
-require '../lib/problem'
+require_relative '../../lib/problem'
 
-class Sliding < Problem
-  class Point
-    attr_accessor :x, :y
-
-    def initialize x, y
-      @x, @y = x.to_i, y.to_i
+module ProgComp
+  class Sliding < Problem
+    def generate *a
     end
 
-    def == other
-      @x == other.x && @y == other.y
-    end
+    class Point
+      attr_accessor :x, :y
 
-    def + other
-      Point.new @x + other.x, @y + other.y
-    end
-
-    def - other
-      Point.new @x - other.x, @y - other.y
-    end
-
-    def * other
-      other = Point.new(*other) unless other.respond_to? :x
-      Point.new @x * other.x, @y * other.y
-    end
-
-    def sign
-      x = @x / @x.abs unless @x == 0
-      y = @y / @y.abs unless @y == 0
-      Point.new x || @x, y || @y
-    end
-
-    def manhattan_dist_to other
-      (@x - other.x).abs + (@y - other.y).abs
-    end
-
-    def to_s
-      "(#{ @x }, #{ @y })"
-    end
-  end
-
-  def brute stdin
-    # Brute force is like solve, but try both paths in recursion
-    problems = stdin.readline.to_i
-
-    problems.times.map do
-      # Width/height unecessary?
-      stdin.readline
-      red = Point.new(*stdin.readline.split(' '))
-      empty = Point.new(*stdin.readline.split(' '))
-      target = Point.new(*stdin.readline.split(' '))
-
-      moves = 0
-      single_move = lambda do |red, empty|
-        return 0 if red == target
-        direction = (target - red).sign
-
-        # Pick whichever is easy to get to
-        best = []
-        unless direction.x == 0
-          move = red + direction * [1, 0]
-          best << empty.manhattan_dist_to(move) + single_move.call(move, red) + 1
-        end
-        unless direction.y == 0
-          move = red + direction * [0, 1]
-          best << empty.manhattan_dist_to(move) + single_move.call(move, red) + 1
-        end
-
-        return best.min
+      def initialize x, y
+        @x, @y = x.to_i, y.to_i
       end
 
-      single_move.call(red, empty)
-    end
-  end
-
-  def solve stdin
-    problems = stdin.readline.to_i
-
-    problems.times.map do
-      # Width/height unecessary?
-      stdin.readline
-      red = Point.new(*stdin.readline.split(' '))
-      empty = Point.new(*stdin.readline.split(' '))
-      target = Point.new(*stdin.readline.split(' '))
-
-      moves = 0
-      until red == target
-        direction = (target - red).sign
-
-        # Pick whichever is easy to get to
-        x_move = empty.manhattan_dist_to(red + direction * [1, 0])
-        y_move = empty.manhattan_dist_to(red + direction * [0, 1])
-
-        if (x_move < y_move && direction.x != 0) || direction.y == 0
-          empty = red
-          red = red + direction * [1, 0]
-          moves += x_move + 1
-        else
-          empty = red
-          red = red + direction * [0, 1]
-          moves += y_move + 1
-        end
+      def == other
+        @x == other.x && @y == other.y
       end
 
-      moves
+      def + other
+        Point.new @x + other.x, @y + other.y
+      end
+
+      def - other
+        Point.new @x - other.x, @y - other.y
+      end
+
+      def * other
+        other = Point.new(*other) unless other.respond_to? :x
+        Point.new @x * other.x, @y * other.y
+      end
+
+      def sign
+        x = @x / @x.abs unless @x == 0
+        y = @y / @y.abs unless @y == 0
+        Point.new x || @x, y || @y
+      end
+
+      def manhattan_dist_to other
+        (@x - other.x).abs + (@y - other.y).abs
+      end
+
+      def to_s
+        "(#{ @x }, #{ @y })"
+      end
+    end
+
+    def brute stdin
+      # Brute force is like solve, but try both paths in recursion
+      problems = stdin.readline.to_i
+
+      problems.times.map do
+        # Width/height unecessary?
+        stdin.readline
+        red = Point.new(*stdin.readline.split(' '))
+        empty = Point.new(*stdin.readline.split(' '))
+        target = Point.new(*stdin.readline.split(' '))
+
+        moves = 0
+        single_move = lambda do |red, empty|
+          return 0 if red == target
+          direction = (target - red).sign
+
+          # Pick whichever is easy to get to
+          best = []
+          unless direction.x == 0
+            move = red + direction * [1, 0]
+            best << empty.manhattan_dist_to(move) + single_move.call(move, red) + 1
+          end
+          unless direction.y == 0
+            move = red + direction * [0, 1]
+            best << empty.manhattan_dist_to(move) + single_move.call(move, red) + 1
+          end
+
+          return best.min
+        end
+
+        single_move.call(red, empty)
+      end
+    end
+
+    def solve stdin
+      problems = stdin.readline.to_i
+
+      problems.times.map do
+        # Width/height unecessary?
+        stdin.readline
+        red = Point.new(*stdin.readline.split(' '))
+        empty = Point.new(*stdin.readline.split(' '))
+        target = Point.new(*stdin.readline.split(' '))
+
+        moves = 0
+        until red == target
+          direction = (target - red).sign
+
+          # Pick whichever is easy to get to
+          x_move = empty.manhattan_dist_to(red + direction * [1, 0])
+          y_move = empty.manhattan_dist_to(red + direction * [0, 1])
+
+          if (x_move < y_move && direction.x != 0) || direction.y == 0
+            empty = red
+            red = red + direction * [1, 0]
+            moves += x_move + 1
+          else
+            empty = red
+            red = red + direction * [0, 1]
+            moves += y_move + 1
+          end
+        end
+
+        moves
+      end
     end
   end
 end
 
 if __FILE__ == $0
-  Sliding.new do |p|
+  ProgComp::Sliding.new do |p|
     # p.solve(DATA)
     # p.brute(DATA)
     
