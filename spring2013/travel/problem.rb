@@ -12,7 +12,7 @@ module ProgComp
 
     def generate args
       places = rand(4..8)
-      paths = places ** 2 + rand(1..places)
+      paths = places ** 2 / 2 + rand(1..places)
       cities = PLACES.sample(places)
       yield "%d" % paths
 
@@ -39,7 +39,7 @@ module ProgComp
 
       start = name.call(existing.to_a.sample)
       hops = rand(3..10)
-      yield "%d %s" % [hops, start]
+      yield "%s %d" % [start, hops]
       hops.times do
         key = existing.grep(/#{ start }/).sample
         start = name.call(key, start)
@@ -80,9 +80,10 @@ module ProgComp
         edges.times do
           a, b, method, len = stdin.readline.split(' ')
           map[a][method.to_sym][b] = len.to_i
+          map[b][method.to_sym][a] = len.to_i
         end
 
-        h, start = stdin.readline.split(' ')
+        start, h = stdin.readline.split(' ')
         hops = h.to_i.times.map { stdin.readline.strip.to_sym }
         # Iterate through list
         find_loc = lambda do |from, left|
@@ -94,8 +95,11 @@ module ProgComp
           end.flatten
         end
 
-        yield find_loc.call(start, hops).sort_by {|dest| -dest.cost}.first
+        solutions = find_loc.call(start, hops).sort_by {|dest| -dest.cost}
+        raise GenerationError, "Ambiguous solution: #{ solutions.first.cost }" if solutions[0] == solutions[1]
+        yield solutions.first
       end
+      raise "Too much file" unless stdin.eof?
     end
   end
 end
@@ -109,12 +113,43 @@ if __FILE__ == $0
 end
 __END__
 1
-4 4
-Phoenix NYC plane 400
-Phoenix Miami plane 300
-Miami NYC bus 200
-NYC Redmond train 800
-3 Phoenix
+30
+Austin Raleigh train 121
+Raleigh Boston train 921
+Austin Indianapolis bus 388
+Raleigh Dallas train 910
+Dallas Austin taxi 612
+Bakersfield Indianapolis plane 277
+Louisville Boston plane 634
+Raleigh Austin bus 647
+Bakersfield Austin bus 792
+Boston Bakersfield train 834
+Dallas Louisville bus 285
+Bakersfield Indianapolis bus 461
+Austin Bakersfield taxi 808
+Dallas Boston train 360
+Louisville Indianapolis plane 714
+Raleigh Louisville bus 113
+Bakersfield Louisville train 496
+Indianapolis Dallas train 699
+Austin Louisville train 752
+Louisville Raleigh train 357
+Indianapolis Dallas taxi 898
+Bakersfield Dallas plane 193
+Boston Dallas train 239
+Raleigh Bakersfield bus 309
+Indianapolis Bakersfield bus 619
+Dallas Raleigh train 198
+Indianapolis Boston plane 413
+Dallas Indianapolis taxi 507
+Louisville Raleigh bus 616
+Indianapolis Bakersfield plane 564
+Indianapolis 8
+plane
+train
 plane
 bus
 train
+train
+plane
+plane

@@ -14,7 +14,8 @@ problems:
       - runner_vera.py
 
   travel:
-    runners: []
+    runners:
+      - runner_andrew.py
 
   talent:
     runners: []

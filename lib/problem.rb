@@ -42,6 +42,9 @@ class Problem
       "#{ super }\n#{ @trial }"
     end
   end
+
+  class GenerationError < RuntimeError
+  end
   
   def initialize
     yield self if block_given?

@@ -22,7 +22,7 @@ task :gen, :slug do |t, args|
       # We had a problem here where the edge file was not being updated to
       # include the correct number of inputs (aka human error), so people who
       # ignored the number of inputs line got too many solutions.  We need to
-      # foolproof this more.
+      # foolproof this more.    100
       edge = File.open(slug_dir.call(slug, 'edge.in')).read.gsub(/^# .*/, '').gsub(/^\s*$\n/, '') rescue nil
       if edge
         count = edge.lines.first.to_i
@@ -36,26 +36,36 @@ task :gen, :slug do |t, args|
       print "Generating files for #{ slug }"
       config['test_files'].times do |i|
         print "."
-        file = "#{ prefix }/#{ i }"
-        # Generate the input file
-        File.open("#{ file }.in", 'w+') do |input|
-          # Write the count
-          input.puts config['test_cases'][env]
+        while true
+          file = "#{ prefix }/#{ i }"
+          # Generate the input file
+          File.open("#{ file }.in", 'w+') do |input|
+            # Write the count
+            input.puts config['test_cases'][env]
 
-          # Write the edge cases
-          input.write edge if edge
+            # Write the edge cases
+            input.write edge if edge
 
-          # Add in our own from gen.rb
-          problem.input_file(config['test_cases'][env] - (count or 0)) do |line|
-            input.puts line
+            # Add in our own from gen.rb
+            problem.input_file(config['test_cases'][env] - (count or 0)) do |line|
+              input.puts line
+            end
           end
-        end
 
-        # Generate the corresponding output file
-        File.open("#{ file }.out", 'w+') do |output|
-          problem.solve(File.open("#{ file }.in")) do |line|
-            output.puts line
+          # Generate the corresponding output file
+          begin
+            File.open("#{ file }.out", 'w+') do |output|
+              problem.solve(File.open("#{ file }.in")) do |line|
+                output.puts line
+              end
+            end
+          rescue Problem::GenerationError => e
+            # If our solution rejects the generated file, retry
+            next
           end
+
+          # Break infinite loop
+          break
         end
       end
       puts "done"
