@@ -2,7 +2,15 @@ require_relative '../../lib/problem'
 
 module ProgComp
   class Shaving < Problem
-    def generate *a
+    def generate args
+      days = rand(10..100)
+      obs = days / 2 + rand(1..10)
+      const = rand(10..30)
+
+      yield "%d %d %d" % [days, const, obs]
+      obs.times.map { [rand(2..days), rand(1..const)] }.sort_by(&:first).each do |d, h|
+        yield "%d %d" % [d, h]
+      end
     end
 
     def brute stdin

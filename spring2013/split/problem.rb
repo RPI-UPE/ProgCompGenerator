@@ -2,7 +2,28 @@ require_relative '../../lib/problem'
 
 module ProgComp
   class Split < Problem
-    def generate *a
+    def sum_set sum, range
+      nums = []
+      total = 0
+      while total < sum
+        nums << rand(range)
+        total += nums.last
+      end
+      nums[-1] -= total - sum
+      nums
+    end
+
+    def generate args
+      sets = rand(1..10)
+      target = rand(10..100)
+      nums = []
+      sets.times do
+        nums += sum_set(target, 1..target)
+      end
+      yield nums.size
+      nums.each do |n|
+        yield n
+      end
     end
 
     def brute stdin
