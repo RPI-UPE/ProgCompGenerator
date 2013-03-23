@@ -4,7 +4,7 @@ require 'set'
 module ProgComp
   class Travel < Problem
     PLACES = %w{Albuquerque Arlington Atlanta Austin Bakersfield Baltimore Boston Charlotte Chicago Cleveland Columbus Dallas Denver Detroit Fresno Houston Indianapolis Jacksonville Louisville Memphis Mesa Miami Milwaukee Minneapolis Nashville Oakland Omaha Philadelphia Phoenix Portland Raleigh Sacramento Seattle Tucson Tulsa Washington Wichita}
-    METHODS = %w{bus, plane, taxi, train}
+    METHODS = %w{bus plane taxi train}
 
     def key a, b, method
       "%s %s %s" % [a, b, method]
@@ -13,7 +13,7 @@ module ProgComp
     def generate args
       places = rand(4..8)
       paths = places ** 2 + rand(1..places)
-      cities = places.times.map { PLACES.sample }
+      cities = PLACES.sample(places)
       yield "%d" % paths
 
       existing = Set.new
@@ -35,9 +35,9 @@ module ProgComp
       end
 
       # Now do the routes
-      name = -> key, other=nil { key.split(' ').first(2).filter {|i| i != other }.first }
+      name = -> key, other=nil { key.split(' ').first(2).select {|i| i != other }.first }
 
-      start = name.call(existing.sample)
+      start = name.call(existing.to_a.sample)
       hops = rand(3..10)
       yield "%d %s" % [hops, start]
       hops.times do
@@ -52,11 +52,28 @@ module ProgComp
     def brute stdin
     end
 
+    class Destination
+      attr_accessor :loc, :cost
+      def initialize loc, cost
+        @loc = loc
+        @cost = cost
+      end
+
+      def + cost
+        @cost += cost
+        self
+      end
+
+      def to_s
+        @loc
+      end
+    end
+
     def solve stdin
       problems = stdin.readline.to_i
 
       problems.times do
-        _, edges = stdin.readline.split(' ').map(&:to_i)
+        edges = stdin.readline.to_i
         tree = proc { Hash.new { |h, k| h[k] = tree.call } }
         map = tree.call
 
@@ -71,14 +88,13 @@ module ProgComp
         find_loc = lambda do |from, left|
           now, *rest = left
 
-          return [[from, 0]] unless now
+          return [Destination.new(from, 0)] unless now
           map[from][now].map do |loc, len|
-            find_loc.call(loc, rest).map {|place, dist| [place, dist+len]}.flatten(1)
-          end
+            find_loc.call(loc, rest).map {|dest| dest+len}
+          end.flatten
         end
 
-        endpoints = find_loc.call(start, hops).select {|e| e.length > 1}
-        puts endpoints.sort_by {|loc, len| -len}.first.first
+        yield find_loc.call(start, hops).sort_by {|dest| -dest.cost}.first
       end
     end
   end
@@ -86,7 +102,9 @@ end
 
 if __FILE__ == $0
   ProgComp::Travel.new do |p|
-    p.solve(DATA)
+    p.solve(DATA) do |s|
+      puts s
+    end
   end
 end
 __END__

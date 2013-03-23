@@ -50,7 +50,7 @@ module ProgComp
               groups += 1
             end
           end and begin
-            puts groups
+            yield groups
             break
           end
           # else, next i
@@ -62,7 +62,9 @@ end
 
 if __FILE__ == $0
   ProgComp::Split.new do |p|
-    p.solve(DATA)
+    p.solve(DATA) do |s|
+      puts s
+    end
   end
 end
 __END__

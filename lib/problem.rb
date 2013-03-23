@@ -67,6 +67,10 @@ class Problem
     puts "#{ n } random trials succeeded"
   end
 
+  def input_file(n=1, args={})
+    n.times { generate(args) { |s| yield s } }
+  end
+
   def generate *a
     raise "generate() not implemented"
   end

@@ -52,6 +52,7 @@ module ProgComp
             to_shave = shave.call(day+1, 1) + m * [0, 7 - growth].max
             not_to_shave = shave.call(day+1, growth+1) + obligations[day] * growth
 
+            # raise "Ambiguous solution #{ to_shave }" if to_shave == not_to_shave
             if to_shave < not_to_shave or day == 0
               shave_days << day + 1
             end
@@ -62,7 +63,7 @@ module ProgComp
         end
 
         shave.call(0, 0)
-        puts shave_days.sort.uniq.join ' '
+        yield shave_days.sort.uniq.join ' '
       end
     end
   end
@@ -70,7 +71,9 @@ end
 
 if __FILE__ == $0
   ProgComp::Shaving.new do |p|
-    p.solve(DATA)
+    p.solve(DATA) do |s|
+      puts s
+    end
   end
 end
 __END__

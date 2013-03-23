@@ -3,6 +3,30 @@ require_relative '../../lib/problem'
 module ProgComp
   class Talent < Problem
     def generate args
+      depth = 3..5
+      breadth = 1..3
+      value = 5..10
+
+      talents = {}
+      talents[1] = [0, 0]
+
+      count = 1
+      gen = lambda do |root, level|
+        return if rand(depth) < level
+
+        rand(breadth).times do
+          count += 1
+          talents[count] = [root, level * rand(value)]
+
+          gen.call(count, level + 1)
+        end
+      end
+
+      gen.call(1, 0)
+
+      talents.each do |id, data|
+        yield "%d %d %d" % [id, *data]
+      end
     end
 
     def brute stdin
@@ -43,15 +67,13 @@ module ProgComp
           talents[id] = Talent.new talents[req], value
         end
 
-        p talents.values.map(&:effective_value)
-
         pick = []
         max.times do
           pick << talents.sort_by{|id,t| -t.effective_value}.first.first
           talents[pick.last].pick
         end
 
-        puts pick.join ' '
+        yield pick.join ' '
       end
     end
   end
@@ -59,7 +81,9 @@ end
 
 if __FILE__ == $0
   ProgComp::Talent.new do |p|
-    p.solve(DATA)
+    p.solve(DATA) do |s|
+      puts s
+    end
   end
 end
 __END__

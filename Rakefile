@@ -46,7 +46,7 @@ task :gen, :slug do |t, args|
           input.write edge if edge
 
           # Add in our own from gen.rb
-          problem.generate(config['test_cases'][env] - (count or 0), :without_leader => true) do |line|
+          problem.input_file(config['test_cases'][env] - (count or 0)) do |line|
             input.puts line
           end
         end
