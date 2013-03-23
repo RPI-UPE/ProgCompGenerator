@@ -56,6 +56,7 @@ module ProgComp
           # else, next i
         end
       end
+      raise "Too much file" unless stdin.eof?
     end
   end
 end

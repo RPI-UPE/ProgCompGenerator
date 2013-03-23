@@ -1,22 +1,28 @@
-You are given a sequence of `n` positive integers. Your goal is to split up
-these numbers into as many groups as possible such that the sum of the numbers
-in each group is equal across all groups. A group can only consist of numbers
-that are sequential with each other.
+You are given a sequence of `n > 0` positive integers. Your goal is to organize
+these numbers into sets such that the sum of the numbers in each set is equal
+across all sets. A set can only consist of numbers that are adjacent to each
+other. All numbers must be part of a set.
 
 Your input will be first an integer telling you how many numbers to read, and
 then a new number on each line. Your output will be a single integer
-representing how many groups of equal sum were formed.
+representing how many sets of equal sum were formed.
+
+Example
+
+The sequence "3 4 5 1 1 7" can be split into three groups: "3 4", "5 1 1", and
+"7", which each total 7.
 
 Example input
 
 ```
 2
-5
-1
+6
 3
-2
-1
+4
 5
+1
+1
+7
 3
 9
 7
@@ -26,7 +32,7 @@ Example input
 Example output
 
 ```
-2
+3
 1
 ```
 

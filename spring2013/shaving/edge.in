@@ -1,0 +1,15 @@
+# Blank lines and lines prefixed with "# " are ignored
+2
+
+# 1. Test input
+3 30 2
+2 17
+3 16
+
+# 2. Test input
+3 50 3
+1 10
+2 10
+3 10
+
+# 3.

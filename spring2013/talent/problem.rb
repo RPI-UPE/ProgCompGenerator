@@ -3,27 +3,32 @@ require_relative '../../lib/problem'
 module ProgComp
   class Talent < Problem
     def generate args
-      depth = 3..5
-      breadth = 1..3
-      value = 5..10
+      depth = 3..6
+      breadth = 2..3
+      value = 50..10000
 
       talents = {}
       talents[1] = [0, 0]
 
       count = 1
+      leaf = 0
       gen = lambda do |root, level|
-        return if rand(depth) < level
+        if rand(depth) < level
+          leaf += 1
+          return
+        end
 
         rand(breadth).times do
           count += 1
-          talents[count] = [root, level * rand(value)]
+          talents[count] = [root, rand(value)]
 
           gen.call(count, level + 1)
         end
       end
 
-      gen.call(1, 0)
+      gen.call(1, 1)
 
+      yield "%d %d" % [talents.size, rand(3..leaf/2)]
       talents.each do |id, data|
         yield "%d %d %d" % [id, *data]
       end
@@ -33,10 +38,12 @@ module ProgComp
     end
 
     class Talent
-      attr_accessor :picked
+      attr_accessor :picked, :ultimate
       def initialize req, value
         @req = req
         @value = value
+        @ultimate = true
+        @req.ultimate = false if @req
       end
 
       def effective_value
@@ -69,12 +76,20 @@ module ProgComp
 
         pick = []
         max.times do
-          pick << talents.sort_by{|id,t| -t.effective_value}.first.first
+          contending_values = talents.select{|id, t|t.ultimate && !t.picked}.sort_by{|id,t| -t.effective_value}
+
+          if contending_values.first(2).map {|id, t| t.effective_value}.reduce(:==)
+            # Can't tie
+            raise GenerationError, "Ambiguous value after #{pick.length}/#{max} with #{contending_values.length} ultimates"
+          end
+
+          pick << contending_values.first.first
           talents[pick.last].pick
         end
 
-        yield pick.join ' '
+        yield pick.sort.join ' '
       end
+      raise "Too much file" unless stdin.eof?
     end
   end
 end

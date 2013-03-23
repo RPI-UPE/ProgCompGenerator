@@ -1,19 +1,38 @@
-(The story for this one sucks, so I might change it).
+(The story for this one sucks, so I might change it. Suggestions welcome.)
+
 You are playing a video game and you need to select skills for your character.
 Each skill depends on exactly one other skill, with the exception of the
-starting skill, which does not depend on any. Any given skill may however have
-multiple skills dependent on it. The best skills are the ones at the end: no
-skills depend on them. You are allowed to select M best skills, and when you do,
-you automatically receive the benefits of all the skills needed to get that
-skill. You cannot receive the benefits of any skill more than once, however.
-Given a list of skills, their values, and which skills they depend on, list the
-5 skills (ordered by value) that should be selected to maximize your character.
+starting skill, which you get. Any given skill may, however, have multiple
+skills dependent on it. We define an "ultimate" skill as a skill that no other
+skill depends on. You are allowed to select M ultimate skills, and when you do
+select one, you automatically receive the benefits of every skill needed to get
+that skill. You cannot receive the benefits of any skill more than once,
+however. 
 
-Input is <id> <depends on> <value>
+The first line consists of two integers, first the number of skills and second
+the number of skills you can choose. Each line after consists of three integers:
+the skill id (1 through `n`), the skill requirement (or 0 if none), and the
+skill value. You must output a list of skills ordered by increasing id.
+
+Example
+
+    Skill 1 depends on 0 and has value 0
+    Skill 2 depends on 1 and has value 10
+    Skill 3 depends on 1 and has value 10
+    Skill 4 depends on 2 and has value 30
+    Skill 5 depends on 2 and has value 25
+    Skill 6 depends on 3 and has value 20
+    Skill 7 depends on 3 and has value 20
+
+We would select ultimate skills 4 and 6, which would in total give us 1, 2, 3,
+4, and 6 for a total of 70 points. Choosing 4 and 5, however, would give us only
+1, 2, 4, and 5 for a total of 65 points.
+
+    4 6
 
 Example input
 1
-7 2 (<number>, <M>)
+7 2
 1 0 0
 2 1 10
 3 1 10
@@ -24,4 +43,3 @@ Example input
 
 Example output
 4 6
-

@@ -98,7 +98,7 @@ module ProgComp
         end
 
         solutions = find_loc.call(start, hops).sort_by {|dest| -dest.cost}
-        raise GenerationError, "Ambiguous solution: #{ solutions.first.cost }" if solutions[0] == solutions[1]
+        raise GenerationError, "Ambiguous solution: #{ solutions.first.cost }" if solutions.length > 1 && solutions[0].cost == solutions[1].cost
         yield solutions.first
       end
       raise "Too much file" unless stdin.eof?
