@@ -1,41 +1,32 @@
 1
-30
-Austin Raleigh train 121
-Raleigh Boston train 921
-Austin Indianapolis bus 388
-Raleigh Dallas train 910
-Dallas Austin taxi 612
-Bakersfield Indianapolis plane 277
-Louisville Boston plane 634
-Raleigh Austin bus 647
-Bakersfield Austin bus 792
-Boston Bakersfield train 834
-Dallas Louisville bus 285
-Bakersfield Indianapolis bus 461
-Austin Bakersfield taxi 808
-Dallas Boston train 360
-Louisville Indianapolis plane 714
-Raleigh Louisville bus 113
-Bakersfield Louisville train 496
-Indianapolis Dallas train 699
-Austin Louisville train 752
-Louisville Raleigh train 357
-Indianapolis Dallas taxi 898
-Bakersfield Dallas plane 193
-Boston Dallas train 239
-Raleigh Bakersfield bus 309
-Indianapolis Bakersfield bus 619
-Dallas Raleigh train 198
-Indianapolis Boston plane 413
-Dallas Indianapolis taxi 507
-Louisville Raleigh bus 616
-Indianapolis Bakersfield plane 564
-Indianapolis 8
-plane
-train
-plane
+20
+Baltimore Albuquerque bus 165
+Baltimore Detroit plane 599
+Albuquerque Tulsa plane 948
+Albuquerque Portland bus 105
+Detroit Albuquerque bus 600
+Tulsa Detroit taxi 363
+Baltimore Albuquerque train 533
+Indianapolis Tulsa train 384
+Detroit Portland train 823
+Indianapolis Detroit bus 736
+Portland Detroit plane 599
+Albuquerque Indianapolis train 894
+Portland Tulsa train 807
+Baltimore Tulsa bus 477
+Detroit Albuquerque train 114
+Detroit Portland taxi 382
+Indianapolis Detroit plane 408
+Portland Tulsa taxi 382
+Indianapolis Albuquerque taxi 442
+Albuquerque Tulsa train 100
+Indianapolis 9
+taxi
 bus
-train
-train
+bus
 plane
 plane
+taxi
+bus
+taxi
+taxi
