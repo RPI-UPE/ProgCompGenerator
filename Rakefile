@@ -216,6 +216,47 @@ end
 task :brute, :slug do |t, args|
   config['problems'].each do |slug, cfg|
     if !args[:slug] || args[:slug] == slug
+      print "Brute-forcing #{ slug }"
+      require slug_dir.call(slug, 'problem.rb')
+      cls = ProgComp.const_get(slug.capitalize)
+      problem = cls.new
+
+      unless problem.respond_to?(:brute)
+        puts "...skipped"
+      end
+
+      require 'stringio'
+      input = StringIO.new("1\n" + problem.enum_for(:generate, {}).to_a.join("\n"))
+
+      require 'timeout'
+      begin
+        Timeout::timeout(5) do
+          problem.brute(input){}
+        end
+
+        # It... finished.
+        puts
+        raise Problem::GenerationError, "#{ slug.capitalize } finished a brute-force. Bad."
+      rescue Timeout::Error
+        # Good, it failed! Let's check how badly
+        if problem.bruted * 24 > 0.25
+          # It would have gotten a quarter of the way on this one; that's not a good sign
+          puts
+          raise Problem::GenerationError, "#{ slug.capitalize } needs more umph!"
+        end
+        puts "...success (#{problem.bruted * 24})"
+      end
     end
+  end
+end
+
+task :solve, :slug do |t, args|
+  raise "Slug required" unless args[:slug]
+  require slug_dir.call(args[:slug], 'problem.rb')
+  cls = ProgComp.const_get(args[:slug].capitalize)
+  problem = cls.new
+
+  problem.solve(STDIN) do |s|
+    puts s
   end
 end

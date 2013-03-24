@@ -6,9 +6,9 @@ require_relative '../../lib/problem'
 module ProgComp
   class Fitness < Problem
     def generate args
-      depth = 3..6
+      depth = 5..6
       breadth = 2..3
-      value = 50..10000
+      value = 1..100000
 
       talents = {}
       talents[1] = [0, 0]
@@ -31,7 +31,7 @@ module ProgComp
 
       gen.call(1, 1)
 
-      yield "%d %d" % [talents.size, rand(3..leaf/2)]
+      yield "%d %d" % [talents.size, rand(3..leaf/3)]
       talents.each do |id, data|
         yield "%d %d %d" % [id, *data]
       end
@@ -98,19 +98,25 @@ module ProgComp
 end
 
 if __FILE__ == $0
-  ProgComp::Talent.new do |p|
+  ProgComp::Fitness.new do |p|
     p.solve(DATA) do |s|
       puts s
     end
   end
 end
 __END__
-1
+2
 7 2
-1 0 0
+1 0 10
 2 1 10
 3 1 10
 4 2 30
 5 2 25
 6 3 20
-7 3 20
+7 3 15
+5 2
+1 0 10
+2 1 10
+3 1 50
+4 3 5
+5 3 15

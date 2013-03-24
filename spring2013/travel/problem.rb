@@ -3,7 +3,8 @@ require 'set'
 
 module ProgComp
   class Travel < Problem
-    PLACES = %w{Albuquerque Arlington Atlanta Austin Bakersfield Baltimore Boston Charlotte Chicago Cleveland Columbus Dallas Denver Detroit Fresno Houston Indianapolis Jacksonville Louisville Memphis Mesa Miami Milwaukee Minneapolis Nashville Oakland Omaha Philadelphia Phoenix Portland Raleigh Sacramento Seattle Tucson Tulsa Washington Wichita}
+    # PLACES = %w{Albuquerque Arlington Atlanta Austin Bakersfield Baltimore Boston Charlotte Chicago Cleveland Columbus Dallas Denver Detroit Fresno Houston Indianapolis Jacksonville Louisville Memphis Mesa Miami Milwaukee Minneapolis Nashville Oakland Omaha Philadelphia Phoenix Portland Raleigh Sacramento Seattle Tucson Tulsa Washington Wichita}
+    PLACES = 26.times.map {|i| (65+i).chr}
     METHODS = %w{bus plane taxi train}
 
     def key a, b, method
@@ -11,7 +12,7 @@ module ProgComp
     end
 
     def generate args
-      places = rand(4..8)
+      places = rand(8..10)
       paths = places ** 2 / 2 + rand(1..places)
       cities = PLACES.sample(places)
       yield "%d" % paths
@@ -31,7 +32,7 @@ module ProgComp
           edge = key source, dest, method
           existing << edge
 
-          yield "%s %d" % [edge, rand(100..1000)]
+          yield "%s %d" % [edge, rand(100..10000)]
           break
         end
       end
@@ -40,7 +41,7 @@ module ProgComp
       name = -> key, other=nil { key.split(' ').first(2).select {|i| i != other }.first }
 
       start = name.call(existing.to_a.sample)
-      hops = rand(3..10)
+      hops = rand(20..40)
       yield "%s %d" % [start, hops]
       hops.times do
         key = existing.grep(/#{ start }/).sample
@@ -71,6 +72,14 @@ module ProgComp
       def to_s
         @loc
       end
+
+      def hash
+        @loc
+      end
+
+      def eql? other
+        other.loc == @loc
+      end
     end
 
     def solve stdin
@@ -90,18 +99,26 @@ module ProgComp
         start, h = stdin.readline.split(' ')
         hops = h.to_i.times.map { stdin.readline.strip.to_sym }
         # Iterate through list
-        find_loc = lambda do |from, left|
-          now, *rest = left
+        loc = {}
+        loc[start] = 0
 
-          return [Destination.new(from, 0)] unless now
-          map[from][now].map do |loc, len|
-            find_loc.call(loc, rest).map {|dest| dest+len}
-          end.flatten
+        while hops.length > 0
+          now = hops.shift
+
+          temp = {}
+          loc.each do |dest, cost|
+            map[dest][now].each do |step, len|
+              temp[step] = [(temp[step] or 0), cost+len].max
+            end
+          end
+          loc = temp
         end
 
-        solutions = find_loc.call(start, hops).sort_by {|dest| -dest.cost}
-        raise GenerationError, "Ambiguous solution: #{ solutions.first.cost }" if solutions.length > 1 && solutions[0].cost == solutions[1].cost
-        yield solutions.first
+        solutions = loc.sort_by {|dest, cost| -cost}
+        if solutions.length > 1 && solutions[0].first != solutions[1].first && solutions[0].last == solutions[1].last
+          raise GenerationError, "Ambiguous solution: #{ solutions.first.last }" 
+        end
+        yield solutions.first.first
       end
       raise "Too much file" unless stdin.eof?
     end
@@ -116,35 +133,22 @@ if __FILE__ == $0
   end
 end
 __END__
-1
-20
-Baltimore Albuquerque bus 165
-Baltimore Detroit plane 599
-Albuquerque Tulsa plane 948
-Albuquerque Portland bus 105
-Detroit Albuquerque bus 600
-Tulsa Detroit taxi 363
-Baltimore Albuquerque train 533
-Indianapolis Tulsa train 384
-Detroit Portland train 823
-Indianapolis Detroit bus 736
-Portland Detroit plane 599
-Albuquerque Indianapolis train 894
-Portland Tulsa train 807
-Baltimore Tulsa bus 477
-Detroit Albuquerque train 114
-Detroit Portland taxi 382
-Indianapolis Detroit plane 408
-Portland Tulsa taxi 382
-Indianapolis Albuquerque taxi 442
-Albuquerque Tulsa train 100
-Indianapolis 9
+2
+4
+Phoenix NYC plane 400
+Phoenix Miami plane 300
+Miami NYC bus 200
+NYC Redmond train 800
+Phoenix 3
+plane
+bus
+train
+2
+Alburquerque Washington plane 200
+Omaha Washington taxi 100
+Omaha 5
 taxi
-bus
-bus
 plane
 plane
-taxi
-bus
 taxi
 taxi

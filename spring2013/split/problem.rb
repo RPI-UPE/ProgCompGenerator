@@ -2,28 +2,35 @@ require_relative '../../lib/problem'
 
 module ProgComp
   class Split < Problem
-    def sum_set sum, range
-      nums = []
-      total = 0
-      while total < sum
-        nums << rand(range)
-        total += nums.last
-      end
-      nums[-1] -= total - sum
-      nums
-    end
+    # Fancy generator for a previous problem
+    # def sum_set sum, range
+    #   nums = []
+    #   total = 0
+    #   while total < sum
+    #     nums << rand(range)
+    #     total += nums.last
+    #   end
+    #   nums[-1] -= total - sum
+    #   nums
+    # end
+
+    # def generate args
+    #   sets = rand(100..1000)
+    #   target = rand(100..1000)
+    #   nums = []
+    #   sets.times do
+    #     nums += sum_set(target, 1..target)
+    #   end
+    #   yield nums.size
+    #   nums.each do |n|
+    #     yield n
+    #   end
+    # end
 
     def generate args
-      sets = rand(1..10)
-      target = rand(10..100)
-      nums = []
-      sets.times do
-        nums += sum_set(target, 1..target)
-      end
-      yield nums.size
-      nums.each do |n|
-        yield n
-      end
+      nums = rand(50..100)
+      yield nums
+      yield nums.times.map { rand(1..10) }.join("\n")
     end
 
     def partitions(list)
@@ -46,11 +53,12 @@ module ProgComp
 
         best = 0
         count = 2**(nums.length - 1)
-        partitions(nums).map do |part|
+        partitions(nums).each_with_index.map do |part, i|
           # Return number if all equal parts, or 0 otherwise
           sums = part.map{|s| s.reduce(:+)}
 
           best = [best, *sums.map{|s| sums.count(s)}].max
+          @bruted = i.to_f / count
         end
         yield best
       end
@@ -108,7 +116,7 @@ if __FILE__ == $0
   end
 end
 __END__
-7
+2
 6
 3
 4
@@ -120,39 +128,3 @@ __END__
 9
 7
 9
-5
-1
-1
-1
-1
-1
-7
-1
-1
-1
-1
-1
-1
-2
-6
-12
-10
-8
-6
-4
-2
-5
-1
-14
-14
-14
-14
-8
-1
-13
-6
-22
-19
-33
-9
-19

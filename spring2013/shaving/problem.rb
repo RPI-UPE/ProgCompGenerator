@@ -4,14 +4,14 @@ module ProgComp
   class Shaving < Problem
 
     def generate args
-      days = rand(10..100)
+      days = rand(50..100)
       obs = days * 5 / 6 + rand(1..10)
-      const = rand(1000..3000)
+      const = rand(100000..300000)
       #  require 'prime'
       # const = Prime.take(20)[10..-1].sample
 
       yield "%d %d %d" % [days, const, obs]
-      obs.times.map { [rand(2..days), rand(100..const)] }.sort_by(&:first).each do |d, h|
+      obs.times.map { [rand(2..days), rand(10000..const)] }.sort_by(&:first).each do |d, h|
         yield "%d %d" % [d, h]
       end
     end

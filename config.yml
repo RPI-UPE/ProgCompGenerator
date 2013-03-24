@@ -3,7 +3,7 @@ test_files: 50
 
 # Number of test cases to include per file (including edge cases)
 test_cases:
-  devel: 20
+  devel: 200
   prod: 200
 
 semester: spring2013
@@ -18,7 +18,8 @@ problems:
       - runner_andrew.py
 
   fitness:
-    runners: []
+    runners:
+      - runner_andrew.py
 
   shaving:
     runners:
