@@ -168,13 +168,13 @@ task :test, :slug do |t, args|
       if brute.length == 0 
         puts "  Brute tests skipped"
       elsif brute != expected
-        puts "Brute mismatch with expected"
+        puts "  Brute mismatch with expected"
         puts brute
         exit
       end
 
       if solve != expected
-        puts "Solve mismatch with expected"
+        puts "  Solve mismatch with expected"
         puts solve
         exit
       end

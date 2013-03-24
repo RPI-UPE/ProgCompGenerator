@@ -52,6 +52,8 @@ module ProgComp
     end
 
     def brute stdin
+      # Not sure how to do this. Exponential would be harder to write than
+      # actual.
     end
 
     class Destination
