@@ -21,4 +21,5 @@ problems:
     runners: []
 
   shaving:
-    runners: []
+    runners:
+      - runner_doug.py

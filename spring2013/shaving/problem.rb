@@ -17,6 +17,33 @@ module ProgComp
     end
 
     def brute stdin
+      problems = stdin.readline.to_i
+
+      problems.times do
+        n, m, obs = stdin.readline.split(' ').map(&:to_i)
+        obligations = Hash.new(0)
+        obs.times do
+          day, c = stdin.readline.split(' ').map(&:to_i)
+          obligations[day-1] += c
+        end
+
+        # Recursion without caching
+        best_choice = lambda do |day, growth|
+          return 0, [] if day >= n
+          shave, shave_days = best_choice.call(day + 1, 1)
+          shave += m
+          no_shave, no_shave_days = best_choice.call(day + 1, growth + 1)
+          no_shave += growth * obligations[day]
+
+          if shave < no_shave
+            return shave, [day + 1] + shave_days
+          else
+            return no_shave, no_shave_days
+          end
+        end
+
+        yield '1 ' + best_choice.call(0, 0).last.join(' ')
+      end
     end
 
     def greedy stdin
@@ -57,19 +84,6 @@ module ProgComp
           day, c = stdin.readline.split(' ').map(&:to_i)
           obligations[day-1] += c
         end
-
-        # Calculating the value
-        # unhappiness = Array.new(n+1){ Array.new(n+1) { 0 }}
-        # (n-1).downto(0).each do |i|
-        #   # Small optimization: can never have more than i days growth
-        #   i.downto(0).each do |j|
-        #     unhappiness[i][j] = [
-        #       unhappiness[i+1][1] + m * [0, 7 - j].max, # Shaved
-        #       unhappiness[i+1][j+1] + obligations[i] * j # Did not shave
-        #     ].min
-        #   end
-        # end
-        # puts unhappiness[0][0]
 
         # Calculating the sequence
         unhappiness = Array.new(n+1){ Array.new(n+1) { nil }}
