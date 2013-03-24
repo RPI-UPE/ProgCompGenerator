@@ -11,6 +11,15 @@ task :default => [:test]
 
 task :build => [:gen, :test]
 
+def read_edge_file(edge_path)
+  edge = File.open(edge_path).read.gsub(/^# .*/, '').gsub(/^\s*$\n/, '') rescue nil
+  if edge
+    count = edge.lines.first.to_i
+    edge = edge.lines.drop(1).join
+  end
+  return edge, count
+end
+
 task :gen, :slug do |t, args|
   puts "Generating #{ config['test_files'] } files each with #{ config['test_cases'][env] } cases"
   config['problems'].each do |slug, _|
@@ -19,15 +28,7 @@ task :gen, :slug do |t, args|
       cls = ProgComp.const_get(slug.capitalize)
       problem = cls.new
       # Read the edge file
-      # We had a problem here where the edge file was not being updated to
-      # include the correct number of inputs (aka human error), so people who
-      # ignored the number of inputs line got too many solutions.  We need to
-      # foolproof this more.    100
-      edge = File.open(slug_dir.call(slug, 'edge.in')).read.gsub(/^# .*/, '').gsub(/^\s*$\n/, '') rescue nil
-      if edge
-        count = edge.lines.first.to_i
-        edge = edge.lines.drop(1).join
-      end
+      edge, count = read_edge_file(slug_dir.call(slug, 'edge.in'))
 
       # Make the destination folder
       prefix = "grader/#{ slug }/"
@@ -145,13 +146,42 @@ module Tester
 end
 
 task :test, :slug do |t, args|
-  # Try out other solutions
   config['problems'].each do |slug, cfg|
     if !args[:slug] || args[:slug] == slug
       # Testing :slug
       puts "Testing #{ slug }"
 
-      # Iterate over each runner
+      # Try out brute and solve on edge.in and compare with edge.out
+      require 'stringio'
+      require slug_dir.call(slug, 'problem.rb')
+      cls = ProgComp.const_get(slug.capitalize)
+      problem = cls.new
+      edge, count = read_edge_file(slug_dir.call(slug, 'edge.in'))
+      stdin = StringIO.new("%s\n%s" % [count, edge])
+
+      expected = File.open(slug_dir.call(slug, 'edge.out')).read.strip
+      brute = problem.enum_for(:brute, stdin).to_a.join("\n").strip
+      stdin.rewind
+      solve = problem.enum_for(:solve, stdin).to_a.join("\n").strip
+
+      # We may not have implemented a brute
+      if brute.length == 0 
+        puts "  Brute tests skipped"
+      elsif brute != expected
+        puts "Brute mismatch with expected"
+        puts brute
+        exit
+      end
+
+      if solve != expected
+        puts "Solve mismatch with expected"
+        puts solve
+        exit
+      end
+
+      puts "  Edge tests passed"
+
+      # Try out other solutions - iterate over each runner
       runners = cfg['runners']
       next unless runners
       runners.each do |runner|
@@ -181,4 +211,11 @@ task :test, :slug do |t, args|
   # We don't really want to delete otherwise, since it can be useful for
   # debugging.
   rm '.test.diff' if File.exists? '.test.diff'
+end
+
+task :brute, :slug do |t, args|
+  config['problems'].each do |slug, cfg|
+    if !args[:slug] || args[:slug] == slug
+    end
+  end
 end

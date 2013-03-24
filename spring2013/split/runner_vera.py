@@ -9,14 +9,11 @@
 import fileinput
 import sys
 
-def parseList(fileName):
-    firstLine = True
+def parseList():
     A = []
-    for line in fileinput.input(fileName):
-        if (firstLine):
-            firstLine = False
-        else:
-            A.append(int(line))
+    n = int(sys.stdin.readline())
+    for i in range(0, n):
+      A.append(int(sys.stdin.readline()))
 
     return A
 
@@ -51,7 +48,7 @@ def split(A):
                 #if too big, try removing the first element
                 # (if there are negative entries this is not
                 #  necessarily the right approach)
-                if (sumSoFar > targetSum):
+                while (sumSoFar > targetSum):
                     sumSoFar = sumSoFar - A[startIndex]
                     startIndex = startIndex + 1
 
@@ -65,7 +62,8 @@ def split(A):
 
     return maxBins
 
-A = parseList(sys.argv[1])
-maxBins = split(A)
-#print A
-print maxBins
+for i in range(0, int(sys.stdin.readline())):
+  A = parseList()
+  maxBins = split(A)
+  #print A
+  print maxBins

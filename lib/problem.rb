@@ -1,6 +1,8 @@
 require 'stringio'
 
 class Problem
+  attr_accessor :bruted
+
   class Trial
     def initialize vars
       # If we are given a file or string io object, we want the input as a
