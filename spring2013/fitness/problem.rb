@@ -1,7 +1,10 @@
 require_relative '../../lib/problem'
 
+# Note: the wording was changed on this one after the solution was written, so
+# the variable names might be confusing
+
 module ProgComp
-  class Talent < Problem
+  class Fitness < Problem
     def generate args
       depth = 3..6
       breadth = 2..3

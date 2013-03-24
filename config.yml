@@ -17,7 +17,7 @@ problems:
     runners:
       - runner_andrew.py
 
-  talent:
+  fitness:
     runners: []
 
   shaving:
