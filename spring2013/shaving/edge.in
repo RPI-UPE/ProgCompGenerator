@@ -1,5 +1,5 @@
 # Blank lines and lines prefixed with "# " are ignored
-2
+3
 
 # 1. Test input
 3 30 2
@@ -12,4 +12,7 @@
 2 10
 3 10
 
-# 3.
+# 3. Doubles
+4 5 2
+2 10
+2 15

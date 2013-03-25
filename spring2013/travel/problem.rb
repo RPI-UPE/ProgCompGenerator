@@ -53,8 +53,36 @@ module ProgComp
     end
 
     def brute stdin
-      # Not sure how to do this. Exponential would be harder to write than
-      # actual.
+      problems = stdin.readline.to_i
+
+      problems.times do
+        edges = stdin.readline.to_i
+        tree = proc { Hash.new { |h, k| h[k] = tree.call } }
+        map = tree.call
+
+        edges.times do
+          a, b, method, len = stdin.readline.split(' ')
+          map[a][method.to_sym][b] = len.to_i
+          map[b][method.to_sym][a] = len.to_i
+        end
+
+        start, h = stdin.readline.split(' ')
+        hops = h.to_i.times.map { stdin.readline.strip.to_sym }
+        # Iterate through list
+        find_loc = lambda do |from, left|
+          now, *rest = left
+
+          return [Destination.new(from, 0)] unless now
+          map[from][now].map do |loc, len|
+            find_loc.call(loc, rest).map {|dest| dest+len}
+          end.flatten
+        end
+
+        solutions = find_loc.call(start, hops).sort_by {|dest| -dest.cost}
+        raise GenerationError, "Ambiguous solution: #{ solutions.first.cost }" if solutions.length > 1 && solutions[0].cost == solutions[1].cost
+        yield solutions.first
+      end
+      raise "Too much file" unless stdin.eof?
     end
 
     class Destination

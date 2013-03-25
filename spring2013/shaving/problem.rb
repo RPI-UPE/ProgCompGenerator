@@ -42,7 +42,7 @@ module ProgComp
           end
         end
 
-        yield '1 ' + best_choice.call(0, 0).last.join(' ')
+        yield [1, *best_choice.call(0, 0).last].join(' ')
       end
     end
 
